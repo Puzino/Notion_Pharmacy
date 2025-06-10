@@ -54,3 +54,6 @@ class Item(BaseModel):
     def set_expiration_date(self, date: str):
         self.expiration_date = parse(date)
         return
+
+    def clean_title(self):
+        return self.title.lower().strip().capitalize()

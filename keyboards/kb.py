@@ -1,8 +1,7 @@
-from aiogram.types import InlineKeyboardButton
-from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
+from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from notion.models import Category
+from notion.models import Category, Item
 
 
 def settings_kb():
@@ -18,7 +17,7 @@ def main_kb():
     return keyboard
 
 
-def category_kb(categories: list[Category]):
+def category_inline_kb(categories: list[Category]):
     builder = InlineKeyboardBuilder()
     # Добавляем кнопки вопросов
     for category in categories:
@@ -38,3 +37,17 @@ def category_kb(categories: list[Category]):
     # Настраиваем размер клавиатуры
     builder.adjust(1)
     return builder.as_markup()
+
+
+def item_crud_inline_kb(item: Item):
+    inline_kb_list = [
+        [InlineKeyboardButton(text="✏️ Редактировать", callback_data=f'change_item_{item._id}'),
+         InlineKeyboardButton(text="🗑 Удалить",
+                              callback_data=f'delete_item_{item._id}')]]
+    return InlineKeyboardMarkup(inline_keyboard=inline_kb_list)
+
+
+def del_buttons():
+    kb_list = [[KeyboardButton(text="✅ Да"), KeyboardButton(text="❌ Нет")]]
+    keyboard = ReplyKeyboardMarkup(keyboard=kb_list, resize_keyboard=True, one_time_keyboard=True)
+    return keyboard

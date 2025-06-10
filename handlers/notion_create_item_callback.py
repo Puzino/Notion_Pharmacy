@@ -3,6 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Message
 
+from keyboards.kb import main_kb
 from notion.models import Item, Category, CountType, PharmacyType
 from notion.notion_api_handler import create_page
 
@@ -91,5 +92,6 @@ async def capture_quantity(message: Message, state: FSMContext):
     item.set_expiration_date(data.get('expiration_date'))
     request = create_page(item)
     await message.answer(
-        f"Препарат успешно добавлен {item.title}, {item.quantity} - {item.count_type.name}\nId: {request.get('id')}")
+        f"Препарат успешно добавлен {item.title}, {item.quantity} - {item.count_type.name}\nId: {request.get('id')}",
+        reply_markup=main_kb())
     await state.clear()
