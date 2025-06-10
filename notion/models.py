@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from dateutil.parser import parse
 from pydantic import BaseModel
 
 
@@ -46,3 +47,10 @@ class Item(BaseModel):
 
     def get_date_for_notion_create(self):
         return self.expiration_date.strftime('%Y-%m-%d')
+
+    def get_date_for_telegram_bot(self):
+        return self.expiration_date.strftime('%d.%m.%Y')
+
+    def set_expiration_date(self, date: str):
+        self.expiration_date = parse(date)
+        return

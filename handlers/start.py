@@ -20,8 +20,3 @@ async def settings_keyboard(message: Message):
 @start_router.message(F.text == "💼 Вернуться назад")
 async def main_menu(message: Message):
     await message.answer("Главное меню.", reply_markup=main_kb())
-
-
-@start_router.message(F.text == '📖 Проверить задачи')
-async def check_list(message: Message):
-    await message.answer("Задача всё ещё в процессе. Попробуйте позже.")

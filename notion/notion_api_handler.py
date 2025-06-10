@@ -21,7 +21,7 @@ def notion_items_formatter(results: dict) -> list[Item]:
 
         expiration_date_dict = properties.get('Expiration_date').get('date')
         if expiration_date_dict:
-            item.expiration_date = parse(expiration_date_dict.get('start'))
+            item.set_expiration_date(expiration_date_dict.get('start'))
 
         title_dict = properties.get('Name')
         if title_dict:
@@ -69,14 +69,14 @@ def get_pages():
     return notion_items_formatter(data['results'])
 
 
-def get_items_by_category_name(category_name: Category) -> list[Item]:
+def get_items_by_category_name(category_name: str) -> list[Item]:
     results = notion.databases.query(
         **{
             "database_id": DATABASE_ID,
             "filter": {
                 "property": "Categories",
-                category_name.type: {
-                    "contains": category_name.name,
+                "multi_select": {
+                    "contains": category_name,
                 },
             },
         }
@@ -97,14 +97,12 @@ def create_page(item: Item):
         "properties": {
             "Categories": {
                 "type": "multi_select",
-                "multi_select": [{'color': category.color, 'id': category._id, 'name': category.name} for category in
+                "multi_select": [{'name': category.name.strip().lower().capitalize()} for category in
                                  item.categories]
             },
             "Count_type": {
                 "type": "select",
-                "select": {'color': item.count_type.color,
-                           'id': item.count_type.id,
-                           'name': item.count_type.name}
+                "select": {'name': item.count_type.name}
             },
             "Expiration_date": {
                 "type": "date",
@@ -134,10 +132,8 @@ def create_page(item: Item):
                     }
                 ]
             },
-            'Pharmacy_type': {'select': {'color': item.pharmacy_type.color,
-                                         'id': item.pharmacy_type.id,
-                                         'name': item.pharmacy_type.name},
-                              'type': item.pharmacy_type.type},
+            'Pharmacy_type': {'select': {'name': item.pharmacy_type.name},
+                              'type': item.pharmacy_type.area_type},
             'Quantity': {'number': item.quantity, 'type': 'number'}
         }
     }
