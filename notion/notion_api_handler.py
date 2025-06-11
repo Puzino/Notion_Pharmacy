@@ -92,7 +92,7 @@ def delete_page(page_id) -> None:
     return response
 
 
-def create_page(item: Item):
+def create_data_for_create_update(item: Item) -> dict:
     page_data = {
         "properties": {
             "Categories": {
@@ -137,10 +137,13 @@ def create_page(item: Item):
             'Quantity': {'number': item.quantity, 'type': 'number'}
         }
     }
+    return page_data
+
+
+def create_page(item: Item):
     response = notion.pages.create(
         parent={"database_id": DATABASE_ID},
-        properties=page_data['properties'],
-
+        properties=create_data_for_create_update(item)['properties'],
     )
     return response
 
@@ -161,3 +164,16 @@ def get_all_unique_categories():
         for category in item.categories:
             unique_categories.add(Category(_id=category._id, name=category.name, color=category.color))
     return unique_categories
+
+
+def get_item_by_id(item_id: str) -> Item:
+    data = [notion.pages.retrieve(page_id=item_id)]
+    item = notion_items_formatter(data)[0]
+    return item
+
+
+def update_item_by_id(page_id: str, item: Item) -> None:
+    notion.pages.update(
+        page_id=page_id,
+        properties=create_data_for_create_update(item)['properties'])
+    return None
