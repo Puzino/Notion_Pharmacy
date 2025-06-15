@@ -51,3 +51,37 @@ def del_buttons():
     kb_list = [[KeyboardButton(text="✅ Да"), KeyboardButton(text="❌ Нет")]]
     keyboard = ReplyKeyboardMarkup(keyboard=kb_list, resize_keyboard=True, one_time_keyboard=True)
     return keyboard
+
+
+def item_edit_inline_kb(item: Item):
+    inline_kb_list = [
+        [InlineKeyboardButton(text="✏️ Количество", callback_data=f'change_item_count_{item._id}'),
+         InlineKeyboardButton(text="✏️ Название", callback_data=f'change_item_count_{item._id}')],
+        [InlineKeyboardButton(text="✏️ Описание", callback_data=f'change_item_count_{item._id}'),
+         InlineKeyboardButton(text="✏️ Тип лекарства", callback_data=f'change_item_count_{item._id}')],
+        [InlineKeyboardButton(text="✏️ Срок годности", callback_data=f'change_item_count_{item._id}'),
+         InlineKeyboardButton(text="✏️ Категорию", callback_data=f'change_item_count_{item._id}')],
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=inline_kb_list)
+
+
+def edit_count_inline_kb(categories: list[Category]):
+    builder = InlineKeyboardBuilder()
+    # Добавляем кнопки вопросов
+    for category in categories:
+        builder.row(
+            InlineKeyboardButton(
+                text=category.name,
+                callback_data=f'category_{category.name}'
+            )
+        )
+    # Добавляем кнопку "На главную"
+    # builder.row(
+    #     InlineKeyboardButton(
+    #         text='На главную',
+    #         callback_data='back_home'
+    #     )
+    # )
+    # Настраиваем размер клавиатуры
+    builder.adjust(1)
+    return builder.as_markup()

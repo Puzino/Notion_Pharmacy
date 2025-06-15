@@ -19,10 +19,7 @@ async def check_list(message: Message):
     items = get_pages()
     for item in items:
         await message.answer(
-            text=pharmacy_item_text.format(title=item.title, quantity=item.quantity, count_type=item.count_type.name,
-                                           pharmacy_type=item.pharmacy_type.name,
-                                           expiration_date=item.get_date_for_telegram_bot(),
-                                           notes=item.notes, categories=', '.join(cat.name for cat in item.categories)),
+            text=item.item_text(),
             reply_markup=item_crud_inline_kb(item))
     await message.answer(f'Вот список всех лекарств. Количество в базе: {len(items)}', reply_markup=main_kb())
 

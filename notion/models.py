@@ -53,7 +53,17 @@ class Item(BaseModel):
 
     def set_expiration_date(self, date: str):
         self.expiration_date = parse(date)
-        return
+
+    def item_text(self):
+        text = ("Название: {title} - {quantity} - {count_type}"
+                "\nТип: {pharmacy_type}"
+                "\nСрок годности до: {expiration_date}"
+                "\nОписание: {notes}"
+                "\nКатегория: {categories}")
+
+        return text.format(title=self.title, quantity=self.quantity, count_type=self.count_type.name,
+                           pharmacy_type=self.pharmacy_type.name, expiration_date=self.get_date_for_telegram_bot(),
+                           notes=self.notes, categories=', '.join(x.name for x in self.categories))
 
     def clean_title(self):
         return self.title.lower().strip().capitalize()
