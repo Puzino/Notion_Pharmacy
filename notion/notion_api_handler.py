@@ -172,8 +172,8 @@ def get_item_by_id(item_id: str) -> Item:
     return item
 
 
-def update_item_by_id(page_id: str, item: Item) -> None:
+def update_item_by_id(item_id: str, item: Item) -> None:
     notion.pages.update(
-        page_id=page_id,
+        page_id=item_id,
         properties=create_data_for_create_update(item)['properties'])
     return None
