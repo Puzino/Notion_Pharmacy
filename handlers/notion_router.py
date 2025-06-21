@@ -2,7 +2,8 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 
 from keyboards.kb import category_inline_kb, item_crud_inline_kb, items_inline_kb
-from notion.notion_api_handler import get_pages, get_all_unique_categories, get_items_by_category_name, get_item_by_id
+from notion.notion_api_handler import get_items, get_all_unique_categories, get_items_by_category_name, get_item_by_id
+from utils.utils import pharmacy_checker
 
 notion_router = Router()
 
@@ -10,9 +11,15 @@ notion_router = Router()
 @notion_router.message(F.text == '📖 Все медикаменты')
 async def check_list(message: Message):
     await message.answer("Делаю запрос в Notion по всем препаратам!")
-    items = get_pages()
+    items = get_items()
     await message.answer(text=f'Вот список всех лекарств. Количество в базе: {len(items)}',
                          reply_markup=items_inline_kb(items))
+
+
+@notion_router.message(F.text == '🧾 Проверить медикаменты')
+async def check_pharmacy(message: Message):
+    await message.answer('Проверяю медикаменты..')
+    pharmacy_checker()
 
 
 @notion_router.callback_query(F.data.startswith('item_'))

@@ -6,7 +6,7 @@ from notion.models import Category, Item
 
 def main_kb():
     kb_list = [[KeyboardButton(text="📖 Все медикаменты"), KeyboardButton(text="💼 Посмотреть категории")],
-               [KeyboardButton(text="✏️ Добавить в аптечку")]]
+               [KeyboardButton(text="✏️ Добавить в аптечку"), KeyboardButton(text="🧾 Проверить медикаменты")]]
     keyboard = ReplyKeyboardMarkup(keyboard=kb_list, resize_keyboard=True, one_time_keyboard=True)
     return keyboard
 

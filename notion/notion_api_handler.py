@@ -55,7 +55,7 @@ def notion_items_formatter(results: dict) -> list[Item]:
     return items
 
 
-def get_pages():
+def get_items():
     data = notion.databases.query(database_id=DATABASE_ID)
     has_more = data['has_more']
     next_cursor = data['next_cursor']
@@ -150,7 +150,7 @@ def create_page(item: Item):
 
 def get_all_unique_count_type():
     unique_count_type = set()
-    items = get_pages()
+    items = get_items()
     for item in items:
         unique_count_type.add(
             CountType(_id=item.count_type._id, name=item.count_type.name, color=item.count_type.color))
@@ -159,7 +159,7 @@ def get_all_unique_count_type():
 
 def get_all_unique_categories():
     unique_categories = set()
-    items = get_pages()
+    items = get_items()
     for item in items:
         for category in item.categories:
             unique_categories.add(Category(_id=category._id, name=category.name, color=category.color))
