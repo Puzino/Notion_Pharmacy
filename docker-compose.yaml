@@ -1,0 +1,7 @@
+services:
+  pharmacy-bot:
+    build: .
+    container_name: telegram-notion-bot
+    env_file:
+      - .env
+    restart: always

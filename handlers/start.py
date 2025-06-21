@@ -9,4 +9,10 @@ start_router = Router()
 
 @start_router.message(CommandStart())
 async def cmd_start(message: Message):
-    await message.answer("Hi!", reply_markup=main_kb())
+    """
+    First message from bot, func for start
+    :param message:
+    :return:
+    """
+    await message.answer("Hi!\nI`m Telegram bot that helps manage and structure medical data in Notion.",
+                         reply_markup=main_kb())

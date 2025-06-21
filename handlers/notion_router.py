@@ -1,3 +1,6 @@
+"""
+Main file Aiogram routers.
+"""
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 
@@ -10,6 +13,11 @@ notion_router = Router()
 
 @notion_router.message(F.text == '📖 Все медикаменты')
 async def check_list(message: Message):
+    """
+    Get all medicaments from the database.
+    :param message:
+    :return:
+    """
     await message.answer("Делаю запрос в Notion по всем препаратам!")
     items = get_items()
     await message.answer(text=f'Вот список всех лекарств. Количество в базе: {len(items)}',
@@ -18,12 +26,22 @@ async def check_list(message: Message):
 
 @notion_router.message(F.text == '🧾 Проверить медикаменты')
 async def check_pharmacy(message: Message):
+    """
+    Func for check expiration date and quantity.
+    :param message:
+    :return:
+    """
     await message.answer('Проверяю медикаменты..')
-    pharmacy_checker()
+    await pharmacy_checker()
 
 
 @notion_router.callback_query(F.data.startswith('item_'))
 async def get_item(call: CallbackQuery):
+    """
+    Get item by id for update or check.
+    :param call:
+    :return:
+    """
     await call.answer('')
     item_id = call.data.replace('item_', '')
     item = get_item_by_id(item_id)
@@ -32,6 +50,11 @@ async def get_item(call: CallbackQuery):
 
 @notion_router.message(F.text == '💼 Посмотреть категории')
 async def check_category_list(message: Message):
+    """
+    Get all categories from the database.
+    :param message:
+    :return:
+    """
     await message.answer('Делаю запрос в Notion по всем категориям! Жди..')
     categories = get_all_unique_categories()
     await message.answer('Вот список всех категорий!', reply_markup=category_inline_kb(categories))
@@ -39,6 +62,11 @@ async def check_category_list(message: Message):
 
 @notion_router.callback_query(F.data.startswith('category_'))
 async def get_items_by_category(call: CallbackQuery):
+    """
+    Get category by name.
+    :param call:
+    :return:
+    """
     await call.answer('')
     category_name = call.data.replace('category_', '')
     await call.message.answer(f'Делаю за запрос по категории: {category_name}')

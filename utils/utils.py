@@ -18,7 +18,12 @@ numbers_dict = {
 }
 
 
-async def send_text_to_telegram(text: str):
+async def send_text_to_telegram(text: str) -> None:
+    """
+    Send a message about expiration date and quantity to the user list
+    :param text:
+    :return:
+    """
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
     for telegram_id in USERS:
@@ -30,11 +35,21 @@ async def send_text_to_telegram(text: str):
         requests.post(url, data=payload)
 
 
-def days_between(d1, d2):
+def days_between(d1, d2) -> int:
+    """
+    Counts the number of days between the current date and the expiration date.
+    :param d1:
+    :param d2:
+    :return int:
+    """
     return (d2 - d1).days
 
 
-async def pharmacy_checker():
+async def pharmacy_checker() -> None:
+    """
+    Checks all items for expiration date and quantity
+    :return:
+    """
     items = get_items()
     today = datetime.now().date()
     for item in items:

@@ -12,6 +12,11 @@ notion = Client(auth=NOTION_TOKEN)
 
 
 def notion_items_formatter(results: dict) -> list[Item]:
+    """
+    Formating dict to model Items
+    :param results: dict
+    :return list[Item]:
+    """
     items = []
     for result in results:
         item = Item()
@@ -55,7 +60,11 @@ def notion_items_formatter(results: dict) -> list[Item]:
     return items
 
 
-def get_items():
+def get_items() -> list[Item]:
+    """
+    Get all items dict from the Notion database.
+    :return list[Item]:
+    """
     data = notion.databases.query(database_id=DATABASE_ID)
     has_more = data['has_more']
     next_cursor = data['next_cursor']
@@ -70,6 +79,11 @@ def get_items():
 
 
 def get_items_by_category_name(category_name: str) -> list[Item]:
+    """
+    Get items by category name
+    :param category_name: str
+    :return list[Item]:
+    """
     results = notion.databases.query(
         **{
             "database_id": DATABASE_ID,
@@ -84,15 +98,25 @@ def get_items_by_category_name(category_name: str) -> list[Item]:
     return notion_items_formatter(results)
 
 
-def delete_page(page_id) -> None:
+def delete_item(item_id) -> None:
+    """
+    Delete item from the Notion database
+    :param item_id:
+    :return:
+    """
     response = notion.pages.update(
-        page_id=page_id,
+        page_id=item_id,
         archived=True,
     )
     return response
 
 
 def create_data_for_create_update(item: Item) -> dict:
+    """
+    Create data from Item for update.
+    :param item:
+    :return dict:
+    """
     page_data = {
         "properties": {
             "Categories": {
@@ -140,7 +164,12 @@ def create_data_for_create_update(item: Item) -> dict:
     return page_data
 
 
-def create_page(item: Item):
+def create_item(item: Item):
+    """
+    Add item to the Notion database
+    :param item:
+    :return:
+    """
     response = notion.pages.create(
         parent={"database_id": DATABASE_ID},
         properties=create_data_for_create_update(item)['properties'],
@@ -148,16 +177,11 @@ def create_page(item: Item):
     return response
 
 
-def get_all_unique_count_type():
-    unique_count_type = set()
-    items = get_items()
-    for item in items:
-        unique_count_type.add(
-            CountType(_id=item.count_type._id, name=item.count_type.name, color=item.count_type.color))
-    return unique_count_type
-
-
-def get_all_unique_categories():
+def get_all_unique_categories() -> set:
+    """
+    Get all unique categories from the database
+    :return set:
+    """
     unique_categories = set()
     items = get_items()
     for item in items:
@@ -167,12 +191,23 @@ def get_all_unique_categories():
 
 
 def get_item_by_id(item_id: str) -> Item:
+    """
+    Get item by id
+    :param item_id:
+    :return:
+    """
     data = [notion.pages.retrieve(page_id=item_id)]
     item = notion_items_formatter(data)[0]
     return item
 
 
 def update_item_by_id(item_id: str, item: Item) -> None:
+    """
+    Update item by id
+    :param item_id:
+    :param item:
+    :return None:
+    """
     notion.pages.update(
         page_id=item_id,
         properties=create_data_for_create_update(item)['properties'])

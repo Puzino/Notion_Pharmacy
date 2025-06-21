@@ -1,3 +1,6 @@
+"""
+File for callback edit item
+"""
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
@@ -11,12 +14,21 @@ callback_notion_edit_router = Router()
 
 
 class ItemEditForm(StatesGroup):
+    """
+    Form for edit States group
+    """
     item = State()
     quantity = State()
 
 
 @callback_notion_edit_router.callback_query(F.data.startswith('change_item_'))
 async def edit_item(call: CallbackQuery, state: FSMContext):
+    """
+    Main callback func for edit item, receives item for editing.
+    :param call:
+    :param state:
+    :return:
+    """
     await call.answer()
     await call.message.answer('Одну секунду..')
     item_id = call.data.replace('change_item_', '')
@@ -27,6 +39,12 @@ async def edit_item(call: CallbackQuery, state: FSMContext):
 
 @callback_notion_edit_router.callback_query(F.data.startswith('change_count_item_'))
 async def edit_item_count(call: CallbackQuery, state: FSMContext):
+    """
+    Set state quantity item.
+    :param call:
+    :param state:
+    :return:
+    """
     await call.answer()
     await state.set_state(ItemEditForm.quantity)
     await call.message.answer('Напиши новое количество:')
@@ -34,6 +52,12 @@ async def edit_item_count(call: CallbackQuery, state: FSMContext):
 
 @callback_notion_edit_router.message(F.text, ItemEditForm.quantity)
 async def new_count_item(message: Message, state: FSMContext):
+    """
+    Set quantity item. Update item in the Notion database.
+    :param message:
+    :param state:
+    :return:
+    """
     await message.answer('Обновляю информацию..')
     new_quantity = int(''.join(x for x in message.text if x.isdigit()))
     data = await state.get_data()

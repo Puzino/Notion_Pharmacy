@@ -1,3 +1,6 @@
+"""
+File for callback create item
+"""
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
@@ -5,12 +8,15 @@ from aiogram.types import Message
 
 from keyboards.kb import main_kb
 from notion.models import Item, Category, CountType, PharmacyType
-from notion.notion_api_handler import create_page
+from notion.notion_api_handler import create_item
 
 callback_notion_add_router = Router()
 
 
 class ItemForm(StatesGroup):
+    """
+    Form for States group
+    """
     title = State()
     categories = State()
     expiration_date = State()
@@ -22,6 +28,12 @@ class ItemForm(StatesGroup):
 
 @callback_notion_add_router.message(F.text == '✏️ Добавить в аптечку')
 async def add_to_pharmacy(message: Message, state: FSMContext):
+    """
+    Add medicine to Notion database
+    :param message:
+    :param state:
+    :return:
+    """
     text = ("Чтобы добавить новый препарат в аптечку нужно написать текст последовательно в таком формате:"
             "\nНазвание"
             "\nКатегория"
@@ -37,6 +49,12 @@ async def add_to_pharmacy(message: Message, state: FSMContext):
 
 @callback_notion_add_router.message(F.text, ItemForm.title)
 async def capture_name(message: Message, state: FSMContext):
+    """
+    Add title to form
+    :param message:
+    :param state:
+    :return:
+    """
     await state.update_data(title=message.text)
     await message.answer('Супер! А теперь напиши категорию (если их несколько напиши через запятую ","):')
     await state.set_state(ItemForm.categories)
@@ -44,6 +62,12 @@ async def capture_name(message: Message, state: FSMContext):
 
 @callback_notion_add_router.message(F.text, ItemForm.categories)
 async def capture_categories(message: Message, state: FSMContext):
+    """
+    Add categories to form
+    :param message:
+    :param state:
+    :return:
+    """
     await state.update_data(categories=message.text)
     await message.answer('Супер! А теперь напиши дату окончания срока годности (01.01.1970):')
     await state.set_state(ItemForm.expiration_date)
@@ -51,6 +75,12 @@ async def capture_categories(message: Message, state: FSMContext):
 
 @callback_notion_add_router.message(F.text, ItemForm.expiration_date)
 async def capture_expiration_date(message: Message, state: FSMContext):
+    """
+    Add expiration date to form
+    :param message:
+    :param state:
+    :return:
+    """
     await state.update_data(expiration_date=message.text)
     await message.answer('Супер! А теперь напиши тип исчисления (Шт. мг. мл.):')
     await state.set_state(ItemForm.count_type)
@@ -58,6 +88,12 @@ async def capture_expiration_date(message: Message, state: FSMContext):
 
 @callback_notion_add_router.message(F.text, ItemForm.count_type)
 async def capture_count_type(message: Message, state: FSMContext):
+    """
+    Add count type to form
+    :param message:
+    :param state:
+    :return:
+    """
     await state.update_data(count_type=message.text)
     await message.answer('Супер! А теперь напиши тип препарата (Таблетки, сироп, капсулы и тд.):')
     await state.set_state(ItemForm.pharmacy_type)
@@ -65,14 +101,25 @@ async def capture_count_type(message: Message, state: FSMContext):
 
 @callback_notion_add_router.message(F.text, ItemForm.pharmacy_type)
 async def capture_pharmacy_type(message: Message, state: FSMContext):
+    """
+    Add pharmacy type to form
+    :param message:
+    :param state:
+    :return:
+    """
     await state.update_data(pharmacy_type=message.text)
-
     await message.answer('Супер! А теперь напиши примечание к препарату (если нужно):')
     await state.set_state(ItemForm.notes)
 
 
 @callback_notion_add_router.message(F.text, ItemForm.notes)
 async def capture_notes(message: Message, state: FSMContext):
+    """
+    Add notes to form
+    :param message:
+    :param state:
+    :return:
+    """
     await state.update_data(notes=message.text)
     await message.answer('Супер! А теперь напиши количество препарата (10, 20 и тд.):')
     await state.set_state(ItemForm.quantity)
@@ -80,6 +127,13 @@ async def capture_notes(message: Message, state: FSMContext):
 
 @callback_notion_add_router.message(F.text, ItemForm.quantity)
 async def capture_quantity(message: Message, state: FSMContext):
+    """
+    Add the quantity to the form and close the form.
+    Add the item to the database.
+    :param message:
+    :param state:
+    :return:
+    """
     await state.update_data(quantity=message.text)
     await message.answer("Спасибо!")
     data = await state.get_data()
@@ -90,7 +144,7 @@ async def capture_quantity(message: Message, state: FSMContext):
                 notes=data.get('notes'),
                 quantity=int(data.get('quantity')))
     item.set_expiration_date(data.get('expiration_date'))
-    request = create_page(item)
+    request = create_item(item)
     await message.answer(
         f"Препарат успешно добавлен {item.title}, {item.quantity} - {item.count_type.name}\nId: {request.get('id')}",
         reply_markup=main_kb())
