@@ -1,4 +1,5 @@
 # 💊 Telegram Pharmacy Notion Bot
+[![wakatime](https://wakatime.com/badge/user/4fbfbad6-e5c3-4a20-8120-808ef5295d91/project/cc81daea-4d12-4d91-a771-5372d48ddf9d.svg)](https://wakatime.com/badge/user/4fbfbad6-e5c3-4a20-8120-808ef5295d91/project/cc81daea-4d12-4d91-a771-5372d48ddf9d)
 
 Telegram bot that helps manage and structure medical data in Notion. Built using [Aiogram](https://docs.aiogram.dev), integrated with Notion API, and containerized with Docker.
 
@@ -91,7 +92,7 @@ docker run --env-file .env telegram-notion-bot
 ```bash
 docker-compose up --build
 ```
-
+---
 ### 🧰 Tech Stack
 * Python 3.12
 * Aiogram
@@ -99,7 +100,7 @@ docker-compose up --build
 * Docker / Docker Compose
 * APScheduler
 
-
+---
 ### 🐝 License
 
 This project is licensed under the [MIT License](LICENSE). Feel free to use and modify it.
