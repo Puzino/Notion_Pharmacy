@@ -30,6 +30,24 @@ Notion_Pharmacy/
     └── Dockerfile              # Docker build instructions
 ```
 ---
+## Notion database Fields and types.
+Notion Database Fields (Columns):
+1.	Name — Title. 
+Name of the medication
+2. Quantity — `Number`.
+Number of packages or tablets
+3. Count_type — `Select`.
+Measurement unit (pcs, ml, mg)
+4.	Pharmacy_type — `Select`.
+Type of medication (tablets, syrup, suppositories) 
+5.	Categories — `Multi-Select`.
+Medication categories (for headache, stomach, acute pain)
+6. Expiration Date — `Date`.
+Expiration date
+7. Notes — `Text` (optional).
+Additional notes, e.g., how to take the medication
+
+---
 
 ## 🛠 Get notion API database id and secret token.
 To use Notion as a database, you will need to create a [Notion account](https://www.notion.com), create an inline database, specify fields, and then obtain a secret token for your account and database.
