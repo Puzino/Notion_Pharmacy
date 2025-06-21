@@ -18,7 +18,7 @@ numbers_dict = {
 }
 
 
-def send_text_to_telegram(text: str):
+async def send_text_to_telegram(text: str):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
     for telegram_id in USERS:
@@ -34,7 +34,7 @@ def days_between(d1, d2):
     return (d2 - d1).days
 
 
-def pharmacy_checker():
+async def pharmacy_checker():
     items = get_items()
     today = datetime.now().date()
     for item in items:
@@ -44,8 +44,8 @@ def pharmacy_checker():
             expiration_date = abs(expiration_date)
             text = f'<b>⚠️Срок годности заканчивается через {expiration_date} дня:</b>\n{item.item_text()}' \
                 if expiration_date != 0 else f'<b>🚫Закончился срок годности:</b>\n{item.item_text()}'
-            send_text_to_telegram(text)
+            await send_text_to_telegram(text)
         elif quantity <= 5:
             text = f'<b>{numbers_dict[quantity]} Осталось малое количество лекарства:</b>\n{item.item_text()}' \
                 if quantity > 0 else f'<b>{numbers_dict[0]} Закончился препарат:</b>\n{item.item_text()}'
-            send_text_to_telegram(text)
+            await send_text_to_telegram(text)
