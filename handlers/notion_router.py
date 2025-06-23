@@ -9,6 +9,7 @@ from notion.notion_api_handler import get_items, get_all_unique_categories, get_
 from utils.utils import pharmacy_checker
 
 notion_router = Router()
+categories_hash_dict = {}
 
 
 @notion_router.message(F.text == '📖 Все медикаменты')
@@ -57,6 +58,9 @@ async def check_category_list(message: Message):
     """
     await message.answer('Делаю запрос в Notion по всем категориям! Жди..')
     categories = get_all_unique_categories()
+    global categories_hash_dict
+    categories_hash_dict.clear()
+    categories_hash_dict = {f'{abs(hash(category.name))}': f'{category.name}' for category in categories}
     await message.answer('Вот список всех категорий!', reply_markup=category_inline_kb(categories))
 
 
@@ -68,7 +72,7 @@ async def get_items_by_category(call: CallbackQuery):
     :return:
     """
     await call.answer('')
-    category_name = call.data.replace('category_', '')
+    category_name = categories_hash_dict.get(call.data.replace('category_', ''))
     await call.message.answer(f'Делаю за запрос по категории: {category_name}')
     categories_by_name = get_items_by_category_name(category_name)
     await call.message.answer(

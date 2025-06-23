@@ -1,3 +1,5 @@
+import logging
+
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -42,12 +44,14 @@ def category_inline_kb(categories: list[Category]) -> InlineKeyboardMarkup:
     :param categories:
     :return InlineKeyboardMarkup:
     """
+    logging.warning(f"Categories: {categories}")
     builder = InlineKeyboardBuilder()
     for category in categories:
+        callback_value = f'category_{abs(hash(category.name))}'
         builder.row(
             InlineKeyboardButton(
                 text=category.name,
-                callback_data=f'category_{category.name}'
+                callback_data=callback_value
             )
         )
     builder.adjust(1)

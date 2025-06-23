@@ -177,17 +177,18 @@ def create_item(item: Item):
     return response
 
 
-def get_all_unique_categories() -> set:
+def get_all_unique_categories() -> list:
     """
     Get all unique categories from the database
-    :return set:
+    :return list:
     """
-    unique_categories = set()
+    unique_categories = list()
     items = get_items()
     for item in items:
         for category in item.categories:
-            unique_categories.add(Category(_id=category._id, name=category.name, color=category.color))
-    return unique_categories
+            if category not in unique_categories:
+                unique_categories.append(Category(_id=category._id, name=category.name, color=category.color))
+    return sorted(unique_categories, key=lambda x: x.name)
 
 
 def get_item_by_id(item_id: str) -> Item:
